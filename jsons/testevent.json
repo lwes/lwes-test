@@ -1,0 +1,225 @@
+{
+    "name": "testevent",
+    "typed": {
+        "int32[]": {
+            "type": "int32_array",
+            "value": [
+                "10"
+            ]
+        },
+        "uint32": {
+            "type": "uint32",
+            "value": "10"
+        },
+        "nint32[]": {
+            "type": "nullable_int32_array",
+            "value": [
+                "10",
+                null,
+                "20"
+            ]
+        },
+        "float": {
+            "type": "float",
+            "value": "1.2"
+        },
+        "uint16": {
+            "type": "uint16",
+            "value": "10"
+        },
+        "nuint16[]": {
+            "type": "nullable_uint16_array",
+            "value": [
+                null,
+                "10"
+            ]
+        },
+        "byte": {
+            "type": "byte",
+            "value": "32"
+        },
+        "int64": {
+            "type": "int64",
+            "value": "10"
+        },
+        "nshort[]": {
+            "type": "nullable_uint16_array",
+            "value": [
+                "5",
+                null,
+                "10"
+            ]
+        },
+        "boolean": {
+            "type": "boolean",
+            "value": "true"
+        },
+        "nfloat[]": {
+            "type": "nullable_float_array",
+            "value": [
+                "1.11",
+                "1.12",
+                null
+            ]
+        },
+        "int16[]": {
+            "type": "int16_array",
+            "value": [
+                "10"
+            ]
+        },
+        "ipaddr[]": {
+            "type": "ip_addr_array",
+            "value": [
+                "10.0.13.217"
+            ]
+        },
+        "nboolean[]": {
+            "type": "nullable_boolean_array",
+            "value": [
+                "true",
+                null,
+                "false",
+                "true"
+            ]
+        },
+        "key": {
+            "type": "string",
+            "value": "value"
+        },
+        "enc": {
+            "type": "int16",
+            "value": "1"
+        },
+        "ndouble[]": {
+            "type": "nullable_double_array",
+            "value": [
+                "1.23",
+                null,
+                "1.26"
+            ]
+        },
+        "double[]": {
+            "type": "double_array",
+            "value": [
+                "5.0"
+            ]
+        },
+        "boolean[]": {
+            "type": "boolean_array",
+            "value": [
+                "true"
+            ]
+        },
+        "uint16[]": {
+            "type": "uint16_array",
+            "value": [
+                "10"
+            ]
+        },
+        "uint64": {
+            "type": "uint64",
+            "value": "18446744073709551601"
+        },
+        "int16": {
+            "type": "int16",
+            "value": "10"
+        },
+        "string[]": {
+            "type": "string_array",
+            "value": [
+                "value with \" '"
+            ]
+        },
+        "nuint32[]": {
+            "type": "nullable_uint32_array",
+            "value": [
+                "10",
+                "502",
+                null
+            ]
+        },
+        "nint16[]": {
+            "type": "nullable_int16_array",
+            "value": [
+                null,
+                null,
+                "10"
+            ]
+        },
+        "uint32[]": {
+            "type": "uint32_array",
+            "value": [
+                "10"
+            ]
+        },
+        "double": {
+            "type": "double",
+            "value": "5.0"
+        },
+        "nlong[]": {
+            "type": "nullable_int64_array",
+            "value": [
+                "5000000000",
+                null,
+                "8675309"
+            ]
+        },
+        "int64[]": {
+            "type": "int64_array",
+            "value": [
+                "10"
+            ]
+        },
+        "uint64[]": {
+            "type": "uint64_array",
+            "value": [
+                "18446744073709551601"
+            ]
+        },
+        "int32": {
+            "type": "int32",
+            "value": "10"
+        },
+        "nbyte[]": {
+            "type": "nullable_byte_array",
+            "value": [
+                null,
+                "32"
+            ]
+        },
+        "ipaddr": {
+            "type": "ip_addr",
+            "value": "127.0.0.1"
+        },
+        "float[]": {
+            "type": "float_array",
+            "value": [
+                "1.2"
+            ]
+        },
+        "byte[]": {
+            "type": "byte_array",
+            "value": [
+                "32"
+            ]
+        },
+        "nuint64[]": {
+            "type": "nullable_uint64_array",
+            "value": [
+                null,
+                "2342322",
+                "18446744073709551601"
+            ]
+        },
+        "nint64[]": {
+            "type": "nullable_int64_array",
+            "value": [
+                null,
+                "10",
+                null
+            ]
+        }
+    },
+    "version": 1
+}
