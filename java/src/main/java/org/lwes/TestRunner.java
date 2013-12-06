@@ -118,7 +118,7 @@ public class TestRunner {
     }
 
     public static Event eventFromJsonFile(String file) throws IOException{
-        String json = readFromFile("/Users/vikram.kadi/work/open-source-repos/lwes-test/jsons/testevent.json");
+        String json = readFromFile(file);
         return new EventFactory().createEventFromJson(json,
                 EventImplementation.MAP_EVENT);
     }

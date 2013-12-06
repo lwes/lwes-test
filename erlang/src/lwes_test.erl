@@ -5,13 +5,13 @@
         match_values/3]).
 
 start(Args) -> 
-	lwes:start(),
-	{JsonFile, N, Port, LangPorts} = parse_args(Args),
-	Event=event_from_json(JsonFile),
+  lwes:start(),
+  {JsonFile, N, Port, LangPorts} = parse_args(Args),
+  Event=event_from_json(JsonFile),
   ets:new(results_tab, [set, named_table, public]),
   Channel = channel(listener, "127.0.0.1", Port),
-	lwes:listen (Channel, fun receive_events/2, tagged, [event_from_json(JsonFile)]),
-	send_loop(Event, LangPorts, N),
+  lwes:listen (Channel, fun receive_events/2, tagged, [event_from_json(JsonFile)]),
+  send_loop(Event, LangPorts, N),
   lwes:close(Channel),
   Results = ets:match(results_tab, '$1'),
   ets:delete(results_tab), 
@@ -36,15 +36,15 @@ parse_results(Results, LangPorts) ->
 
 receive_events(E, A) -> 
   io:format("Received the event ~p~n", [E]),
-	[Source] = A,
+  [Source] = A,
   case validate_event(E, Source) of
     error -> A;
     {Language, Result} -> ets:insert(results_tab, {Language, Result})
   end,
-	A.
+  A.
 
 validate_event(E, A) ->
-	{lwes_event, _, Attrs} = E, 
+  {lwes_event, _, Attrs} = E, 
   {lwes_event, _, Attrs1} = A, 
   case get_field(Attrs, <<"language">>) of 
     {string, Language} -> {Language, match_fields(Attrs, Attrs1)};
@@ -94,26 +94,26 @@ match_values(T, V1, V2) -> V1 =:= V2.
 
 get_field([], Key) -> {notfound, notfound};
 get_field([{Type, Key1, Value}| Rest], Key) when Key =:= Key1
-	-> {Type, Value};
+  -> {Type, Value};
 get_field([_H | T], Key) -> get_field(T, Key). 
-	
+  
 send_loop(Event, LangPorts, N) -> 
-	lists:map(fun(_X) -> emit_on_ports(LangPorts, Event),
-							timer:sleep(1000) end
+  lists:map(fun(_X) -> emit_on_ports(LangPorts, Event),
+              timer:sleep(1000) end
            ,lists:seq(1, N)).
-			
+      
 
 emit_on_ports(LangPorts, Event) -> 
-	lists:map(fun({Lang, Port}) -> 
-							Channel = channel(emitter, "127.0.0.1", Port), 
-							lwes:emit(Channel, lwes_event:set_string(Event, "language", Lang)),
+  lists:map(fun({Lang, Port}) -> 
+              Channel = channel(emitter, "127.0.0.1", Port), 
+              lwes:emit(Channel, lwes_event:set_string(Event, "language", Lang)),
               lwes:close(Channel) end, 
-						LangPorts).
+            LangPorts).
 
 channel(Type, Ip, Port) -> {ok, Channel} = lwes:open(Type, {Ip, Port}), Channel.
 
 event_from_json(File) -> 
-	{ok, Contents} = file:read_file(File), 
+  {ok, Contents} = file:read_file(File), 
   lwes_event:from_json(Contents).
 
 
