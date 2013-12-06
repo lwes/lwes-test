@@ -1,0 +1,13 @@
+{application, lwes_test,
+ [
+  {description, ""},
+  {vsn, "1"},
+  {registered, []},
+  {applications, [
+                  kernel,
+                  stdlib, 
+                  lwes
+                 ]},
+  {mod, {lwes_test}},
+  {env, []}
+ ]}.
