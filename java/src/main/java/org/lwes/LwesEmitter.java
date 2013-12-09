@@ -8,19 +8,15 @@ import org.lwes.emitter.MulticastEventEmitter;
 public class LwesEmitter implements Runnable{
 
     private Event e;
-    private String lang;
-    private int port;
     MulticastEventEmitter emitter;
     boolean keepRunning;
     
-    public static LwesEmitter emitterFor(Event e, String lang, int port) throws IOException{
-        return new LwesEmitter(e, lang, port);
+    public static LwesEmitter emitterFor(Event e, int port) throws IOException{
+        return new LwesEmitter(e, port);
     }
     
-    private LwesEmitter(Event e, String lang, int port) throws IOException{
+    private LwesEmitter(Event e, int port) throws IOException{
         this.e = e;
-        this.lang = lang;
-        this.port = port;
         emitter= emitter("127.0.0.1", port);
         keepRunning = true;
     }
@@ -29,7 +25,7 @@ public class LwesEmitter implements Runnable{
         while(keepRunning){
             try {
                 emitter.emit(e);
-                Thread.sleep(2000);
+                Thread.sleep(1000);
             } catch (EventSystemException e) {
                 e.printStackTrace();
             } catch (IOException e) {

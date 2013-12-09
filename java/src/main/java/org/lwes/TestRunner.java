@@ -6,23 +6,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 
 public class TestRunner {
-    
+
     public TestRunner() {
 
     }
 
     public static void main(String[] args) throws Exception{
-        int listenPort = recievePort(args);
-        Map<String, Integer> langPorts = langPorts(args);
-        String jsonFile = inputJsonFile(args);
+        int testInterval = Integer.parseInt(args[0]);
+        int listenPort = Integer.parseInt(args[1]);
+        Map<String, Integer> langPorts = langPorts(args[2]);
+        String jsonFile = args[3];
+        
         Event source = eventFromJsonFile(jsonFile);
-        int testInterval = testInterval(args);
         
         LwesListener listener = new LwesListener(listenPort, langPorts, source);
         List<LwesEmitter> emitters = startEmitters(jsonFile, langPorts);
@@ -31,7 +31,7 @@ public class TestRunner {
         
         Map<String, Boolean> results = listener.getResults();
         if(validateResults(langPorts, results))
-            System.exit(2);
+            System.exit(1);
         
         System.exit(0);
     }
@@ -50,7 +50,7 @@ public class TestRunner {
             }
             else{
                 allSuccess = false;
-                System.out.println("Never recieved the event originatino from " + lang + " to java ");
+                System.out.println("Never recieved the event originating from " + lang + " to java ");
             }
         }
         return allSuccess;
@@ -63,28 +63,19 @@ public class TestRunner {
     
     public static List<LwesEmitter> startEmitters(String jsonFile, Map<String, Integer> langPorts) throws IOException{
         List<LwesEmitter> emitters = new ArrayList<LwesEmitter>();
-        
-        for(Entry<String, Integer> entry : langPorts.entrySet()){
-            Event e = eventFromJsonFile(jsonFile);    
-            e.setString("language", "java");
-            LwesEmitter emitter = LwesEmitter.emitterFor(e, "java", entry.getValue());
+        Event e = eventFromJsonFile(jsonFile);    
+        e.setString("language", "java");
+        for(Integer port : langPorts.values()){
+            LwesEmitter emitter = LwesEmitter.emitterFor(e, port);
             new Thread(emitter).start();
         }
         return emitters;
     }
     
-    private static int testInterval(String[] args){
-        return Integer.parseInt(optionValue(args, "-n"));
-    }
-    
-    private static String inputJsonFile(String[] args) {
-        return optionValue(args, "-j");
-    }
 
-    public static Map<String, Integer> langPorts(String[] args){
+    public static Map<String, Integer> langPorts(String emitterOption){
         
         Map<String, Integer> langPortEmitters = new HashMap<String, Integer>();
-        String emitterOption = optionValue(args, "-e");
         
         if(StringUtils.isNotEmpty(emitterOption)){
             String[] langPorts = StringUtils.split(emitterOption, ',');
@@ -95,13 +86,6 @@ public class TestRunner {
             }
         }
         return langPortEmitters;
-    }
-    
-    public static int recievePort(String[] args){
-        String sRecievePort = optionValue(args, "-p");
-        if(StringUtils.isNotEmpty(sRecievePort))
-            return Integer.parseInt(sRecievePort);
-        return -1;
     }
     
     public static String optionValue(String[] args, String option){
