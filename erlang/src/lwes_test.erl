@@ -15,44 +15,40 @@ start(Args) ->
   send_loop(Event, LangPorts, Duration),
   lwes:close(Channel),
   Results = ets:match(results_tab, '$1'),
+  Exit = parse_results(Results, LangPorts),
   ets:delete(results_tab), 
-  halt(parse_results(Results, LangPorts)).  
-
-parse_lang_ports(LangPortsString) -> 
-  lists:map(fun(Y) -> [Lang, Port] = (re:split(Y, ":", [{return, list}])),
-                      {Lang, list_to_integer(Port)}
-                      end, 
-            re:split(LangPortsString, ",", [{return, list}])).
-
-parse_args(Args) -> 
-  [NStr, PortStr, LangPortsString, JsonFile] = Args,
-  N = list_to_integer(NStr), 
-  Port = list_to_integer(PortStr),
-  LangPorts = parse_lang_ports(LangPortsString),
-  {N, Port, LangPorts, JsonFile}.
-
-  % {60, 2336, [{java, 2335}], 
-  %   "/Users/vikram.kadi/work/open-source-repos/lwes-test/jsons/testevent.json"}.
+  halt(Exit).  
 
 parse_results(Results, LangPorts) -> 
+  print_results(Results),
   case length(Results) of
-    0 -> error_logger:info_msg("Did not recieve any messages from any languages~n", []), 1;
     X when X =/= length(LangPorts) 
-      -> error_logger:info_msg("Some of the language tests never sent a response~n",[]);
+      -> error_logger:info_msg("Some of the language events where never recieved ~n",[]), 1;
     _ -> Failures = lists:filter(
                         fun([{_, Result}]) 
                           -> false == Result end, Results),
          case length(Failures) of
           0 -> error_logger:info_msg("Messages from all languages validated~n"), 0;
-          _ -> error_logger:info_msg("Some of the messages could not be read"), 1
+          _ -> error_logger:info_msg("Some of the events could not be decoded"), 1
          end
   end.
+
+print_results(Results) -> 
+  lists:map(
+    fun([{Lang, Result}]) ->
+      case Result of 
+        true -> io:format("Succesfully recieved and validated the event from ~p~n", [Lang]);
+        false -> io:format("Recieved but failed to validate the event from ~p~n", [Lang])
+      end end, Results).
 
 receive_events(E, A) -> 
   [Source] = A,
   case validate_event(E, Source) of
     error -> A;
-    {Language, Result} -> ets:insert(results_tab, {Language, Result})
+    {Language, true} -> error_logger:info_msg("Successfully validated event from ~p~n", [Language]),
+                        ets:insert(results_tab, {Language, true});
+    {Language, false} -> error_logger:info_msg("Failed to validate event from ~p~n", [Language]),
+                        ets:insert(results_tab, {Language, false})
   end,
   A.
 
@@ -60,7 +56,8 @@ validate_event(E, A) ->
   {lwes_event, _, Attrs} = E, 
   {lwes_event, _, Attrs1} = A, 
   case get_field(Attrs, <<"language">>) of 
-    {string, Language} -> {Language, match_fields(Attrs, Attrs1)};
+    {string, Language} -> error_logger:info_msg("Validating the message from ~p~n", [Language]),
+                          {Language, match_fields(Attrs, Attrs1)};
     {notfound, _} -> error
   end.
 
@@ -77,8 +74,7 @@ match_fields([{Type, Key, Value} | Rest], Attrs)
         -> error_logger:info_msg("Found the element ~p but types don't match ~n",[Key]), false;
       {T, V} when T =:= Type2 
         ->  case match_values(T, Value, V) of
-              true -> error_logger:info_msg("Element ~p matched, moving to the next element~n",[Key]), 
-                      match_fields(Rest, Attrs);
+              true ->  match_fields(Rest, Attrs);
               false -> error_logger:info_msg("Element ~p values ~p and ~p do not match ~n",[Key, Value, V]),
                       false
             end
@@ -132,4 +128,17 @@ event_from_json(File) ->
   {ok, Contents} = file:read_file(File), 
   lwes_event:from_json(Contents).
 
+
+parse_lang_ports(LangPortsString) -> 
+  lists:map(fun(Y) -> [Lang, Port] = (re:split(Y, ":", [{return, list}])),
+                      {Lang, list_to_integer(Port)}
+                      end, 
+            re:split(LangPortsString, ",", [{return, list}])).
+
+parse_args(Args) -> 
+  [NStr, PortStr, LangPortsString, JsonFile] = Args,
+  N = list_to_integer(NStr), 
+  Port = list_to_integer(PortStr),
+  LangPorts = parse_lang_ports(LangPortsString),
+  {N, Port, LangPorts, JsonFile}.
 

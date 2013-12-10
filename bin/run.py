@@ -53,7 +53,8 @@ def launch_tests(tests, language_ports):
                       emit_on(language, language_ports), JSON_FILE]  \
                     + post_args
         log.info('launching the ' + str(language) + ' test with ' + str(subp_args))
-        language_tests[language] = subprocess.Popen(subp_args, stdout=open(log_file, 'w+'), stderr=open(log_file, 'w+'))
+        language_tests[language] = \
+            subprocess.Popen(subp_args, stdout=open(log_file, 'w+'), stderr=open(log_file, 'w+'))
     return language_tests
 
 def emit_on(language, language_ports):

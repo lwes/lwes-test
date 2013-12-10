@@ -30,10 +30,12 @@ public class TestRunner {
         stop(emitters);
         
         Map<String, Boolean> results = listener.getResults();
-        if(validateResults(langPorts, results))
-            System.exit(1);
+        if(validateResults(langPorts, results)){
+            System.out.println("All events recieved and validated.");
+            System.exit(0);
+        }
         
-        System.exit(0);
+        System.exit(1);
     }
     
     public static boolean validateResults(Map<String, Integer> langPorts, Map<String, Boolean> langResults){
@@ -44,7 +46,7 @@ public class TestRunner {
                 if(result)
                     System.out.println("Successfully decoded the event from " + lang + " to java ");
                 else{
-                    System.out.println("Failed to correctly decode the event from " + lang + " to java ");
+                    System.out.println("Failed to correctly decode the event from " + lang + " to java, check the logs for errors.");
                     allSuccess = false;
                 }
             }
