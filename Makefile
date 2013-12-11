@@ -19,4 +19,4 @@ build: build-deps
 		cd java; mvn -Dmaven.repo.local=../deps/mvn-repo -DskipTests=true clean package
 
 check: build
-		python bin/run.py
+		(mkdir -p log; python bin/run.py)
