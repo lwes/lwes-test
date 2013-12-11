@@ -1,9 +1,12 @@
-base-dir := `pwd`
-deps-dir := ${base-dir}/deps
-mvn-repo := ${deps-dir}/mvn-repo
+base-dir=$(shell pwd)
+deps-dir=${base-dir}/deps
+mvn-repo=${deps-dir}/mvn-repo
+
+all: check
 
 clean:
 		rm -fr ${deps-dir}
+		(cd erlang; rebar clean)
 
 get-deps: clean
 		(mkdir deps; cd deps; git clone https://github.com/lwes/lwes-java;\
@@ -12,11 +15,14 @@ get-deps: clean
 		(cd erlang; rebar get-deps)
 
 build-deps: get-deps
-		(cd deps; cd lwes-java; mvn -Dmaven.repo.local=../mvn-repo clean package install -Dmaven.test.skip=true)
+	(cd deps; \
+	 cd lwes-java; \
+	 mvn -Dmaven.repo.local=${mvn-repo} clean package install \
+	 -Dmaven.test.skip=true)
 
 build: build-deps
-		cd erlang; rebar compile
-		cd java; mvn -Dmaven.repo.local=../deps/mvn-repo -DskipTests=true clean package
+	cd erlang; rebar compile
+	cd java; mvn -Dmaven.repo.local=${mvn-repo} -DskipTests=true clean package
 
 check: build
-		(mkdir -p log; python bin/run.py)
+	(mkdir -p log; python bin/run.py)
