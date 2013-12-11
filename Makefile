@@ -12,7 +12,7 @@ get-deps: clean
 		(cd erlang; rebar get-deps)
 
 build-deps: get-deps
-		(cd deps; cd lwes-java; mvn -Dmaven.repo.local=../mvn-repo -DskipTests=true clean package install)
+		(cd deps; cd lwes-java; mvn -Dmaven.repo.local=../mvn-repo clean package install -Dmaven.test.skip=true)
 
 build: build-deps
 		cd erlang; rebar compile

@@ -28,7 +28,7 @@ def main():
     init_log()
     language_ports = assign_language_ports(TESTS)
     language_tests = launch_tests(TESTS, language_ports)
-    exit(parse_results(language_tests))
+    sys.exit(parse_results(language_tests))
 
 def parse_results(language_tests):
     all_pass = True
@@ -41,8 +41,10 @@ def parse_results(language_tests):
         else:
             log.info('The test for ' + language + ' passed ')
 
-    return 0 if all_pass else 0
-
+    if all_pass:
+	return 0
+    else:
+        return 1    
 
 def launch_tests(tests, language_ports):
     language_tests = {}
