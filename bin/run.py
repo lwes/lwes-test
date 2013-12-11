@@ -9,7 +9,9 @@ import logging
 
 BASE_PATH = os.path.dirname(os.path.dirname(os.path.realpath(__file__)))
 TESTS = {'java':   [['java', '-jar',  BASE_PATH + '/java/target/lwes-test.jar'], []] ,
-         'erlang': [['erl', '-run', 'lwes_test', 'start'], ['-noshell']]}
+         'erlang': [['erl', '-pa', os.path.join(BASE_PATH, 'erlang/ebin'),
+                            '-pa', os.path.join(BASE_PATH, 'erlang/deps/*/ebin'),
+                            '-run', 'lwes_test', 'start'], ['-noshell']]}
 LOGS = os.path.join(BASE_PATH, 'log') 
 TEST_DURATION = 60
 JSON_FILE = os.path.join(BASE_PATH ,  'jsons/testevent.json')

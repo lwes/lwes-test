@@ -25,7 +25,7 @@ public class LwesEmitter implements Runnable{
         while(keepRunning){
             try {
                 emitter.emit(e);
-                Thread.sleep(50000);
+                Thread.sleep(1000);
             } catch (EventSystemException e) {
                 e.printStackTrace();
             } catch (IOException e) {
