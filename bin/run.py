@@ -41,7 +41,7 @@ def parse_results(language_tests):
             log.info('The test for ' + language + ' passed ')
 
     if all_pass:
-	return 0
+        return 0
     else:
         return 1    
 
