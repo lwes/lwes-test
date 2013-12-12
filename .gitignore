@@ -1,0 +1,6 @@
+deps/
+erlang/deps/
+erlang/ebin/
+java/deps/
+java/target/
+log/
